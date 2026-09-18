@@ -1,0 +1,84 @@
+﻿/* src/styles/tokens/colors.css */
+
+:root {
+  --gray-0:   #ffffff;
+  --gray-25:  #fafbfc;
+  --gray-50:  #f4f6f8;
+  --gray-100: #e8ebef;
+  --gray-200: #ced3da;
+  --gray-300: #9ba3ad;
+  --gray-400: #5f6772;
+  --gray-500: #3a424c;
+  --gray-600: #282e37;
+  --gray-700: #1a1e25;
+  --gray-800: #101317;
+  --gray-900: #08090b;
+  --gray-950: #040507;
+
+  --teal-100: #d5fbf2;
+  --teal-200: #aef6e4;
+  --teal-300: #7fedd8;
+  --teal-400: #5be6cf;
+  --teal-500: #3fe0c5;
+  --teal-600: #22b89f;
+  --teal-700: #178a78;
+  --teal-800: #136b5d;
+  --teal-900: #0c3d35;
+
+  --amber-300: #f3c883;
+  --amber-500: #e8a23d;
+  --amber-700: #8a5e21;
+
+  --green-500: #4ade80;
+  --green-700: #1f7a44;
+  --orange-500: #f5a524;
+  --orange-700: #8a5a10;
+  --red-500: #f0554d;
+  --red-700: #7a231e;
+  --blue-500: #4da8ff;
+  --blue-700: #1f4e8a;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Tailwind v4 theme mapping.
+
+   CRITICAL: use @theme (NOT @theme inline) with LITERAL default
+   values. Tailwind emits `var(--color-X)` in utilities. Then
+   dark.css / light.css override `--color-X` under [data-theme]
+   and the utilities pick it up at runtime.
+   ═══════════════════════════════════════════════════════════ */
+@theme {
+  /* Brand — default to dark values (they get overridden per theme) */
+  --color-primary: #3fe0c5;
+  --color-primary-fg: #04150f;
+  --color-secondary: #e8a23d;
+
+  /* Surfaces */
+  --color-background: #08090b;
+  --color-surface: #0e1014;
+  --color-surface-raised: #161a20;
+  --color-surface-overlay: rgba(14, 16, 20, 0.88);
+  --color-glass: rgba(14, 16, 20, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --color-text-primary: #f3f5f8;
+  --color-text-secondary: #939aa5;
+  --color-text-tertiary: #5b6470;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-strong: rgba(255, 255, 255, 0.13);
+  --color-divider: rgba(255, 255, 255, 0.05);
+
+  /* State */
+  --color-success: #4ade80;
+  --color-warning: #f5a524;
+  --color-danger: #f0554d;
+  --color-info: #4da8ff;
+
+  /* Interaction */
+  --color-hover: rgba(63, 224, 197, 0.08);
+  --color-focus: #3fe0c5;
+  --color-disabled: #262c34;
+}

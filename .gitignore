@@ -1,0 +1,34 @@
+
+
+# Added cleanup
+node_modules/
+.env
+.env.*
+!.env.example
+dist/
+build/
+_flat/
+_src_only/
+dump_part_*.txt
+project_dump.txt
+filelist.txt
+files.txt
+folders.txt
+tree.txt
+*.log
+backend/uploads/
+backend/test-image.png
+.DS_Store
+# Dev/test scripts (not part of the app)
+backend/check-*.mjs
+backend/fix-*.mjs
+backend/make-*.mjs
+backend/patch-*.mjs
+backend/test-*.mjs
+backend/test-*.png
+backend/seed-*.mjs
+phase8-script1.mjs
+frontend/apply-fixes.mjs
+frontend/fix-*.mjs
+frontend/patch-*.mjs
+frontend/structure.txt

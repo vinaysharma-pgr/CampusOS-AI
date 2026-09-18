@@ -1,0 +1,36 @@
+/* src/styles/themes/dark.css */
+
+:root,
+[data-theme="dark"] {
+  --color-primary: #3fe0c5;
+  --color-primary-fg: #04150f;
+  --color-secondary: #e8a23d;
+
+  --color-background: #08090b;
+  --color-surface: #0e1014;
+  --color-surface-raised: #161a20;
+  --color-surface-overlay: rgba(14, 16, 20, 0.88);
+
+  --color-success: #4ade80;
+  --color-warning: #f5a524;
+  --color-danger: #f0554d;
+  --color-info: #4da8ff;
+
+  --color-text-primary: #f3f5f8;
+  --color-text-secondary: #939aa5;
+  --color-text-tertiary: #5b6470;
+
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-strong: rgba(255, 255, 255, 0.13);
+  --color-divider: rgba(255, 255, 255, 0.05);
+
+  --color-hover: rgba(63, 224, 197, 0.08);
+  --color-focus: #3fe0c5;
+  --color-disabled: #262c34;
+
+  --color-glass: rgba(14, 16, 20, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+
+  --shadow-color: 0deg 0% 0%;
+  color-scheme: dark;
+}

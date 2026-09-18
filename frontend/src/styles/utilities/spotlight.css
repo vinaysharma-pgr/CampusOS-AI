@@ -1,0 +1,42 @@
+/* src/styles/utilities/spotlight.css
+   Cursor-following spotlight primitive. */
+
+.spotlight-card {
+  position: relative;
+  isolation: isolate;
+  transition: transform 250ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+              border-color 250ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--spot-radius, 320px) circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--spot-color, #3fe0c5) calc(var(--spot-intensity, 0.14) * 100%), transparent),
+    transparent 70%
+  );
+  opacity: var(--spot-opacity, 0);
+  transition: opacity 300ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.spotlight-card:hover {
+  transform: translateY(calc(-1 * var(--spot-lift, 2px)));
+  border-color: var(--color-border-strong);
+}
+
+.spotlight-card > * { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-card, .spotlight-card::before { transition: none !important; }
+  .spotlight-card:hover { transform: none !important; }
+  .spotlight-card::before { display: none !important; }
+}
+
+@media (pointer: coarse) {
+  .spotlight-card::before { display: none !important; }
+}

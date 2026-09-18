@@ -1,0 +1,6 @@
+﻿/* src/styles/tokens/typography.css */
+
+@theme {
+  --font-sans: "Inter", "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Berkeley Mono", ui-monospace, "SF Mono", monospace;
+}

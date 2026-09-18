@@ -1,0 +1,7 @@
+﻿/* src/styles/tokens/spacing.css */
+
+@theme {
+  --spacing: 0.25rem;
+  --spacing-13: 3.25rem;
+  --spacing-18: 4.5rem;
+}

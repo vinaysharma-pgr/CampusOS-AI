@@ -1,0 +1,166 @@
+﻿/* src/styles/utilities/hover.css
+   Professional hover primitives.
+   One easing, three tiers, respects reduced-motion.
+*/
+
+/* ════════════════════════════════════════════════
+   Tier 1 — MICRO (buttons, icons, chips)
+   150ms, subtle scale, no layout shift
+   ════════════════════════════════════════════════ */
+
+.hover-micro {
+  transition:
+    transform 150ms var(--ease-out),
+    background-color 150ms var(--ease-out),
+    border-color 150ms var(--ease-out),
+    color 150ms var(--ease-out),
+    box-shadow 150ms var(--ease-out);
+  will-change: transform;
+}
+.hover-micro:hover {
+  transform: translateY(-1px);
+}
+.hover-micro:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ════════════════════════════════════════════════
+   Tier 2 — LIFT (cards, tiles, panels)
+   250ms, Y-translate + shadow bloom
+   Uses a CSS var so each card can tint its own glow
+   ════════════════════════════════════════════════ */
+
+.hover-lift {
+  --lift-glow: rgba(63, 224, 197, 0.18);
+  transition:
+    transform 250ms var(--ease-out),
+    box-shadow 250ms var(--ease-out),
+    border-color 250ms var(--ease-out);
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-strong);
+  box-shadow:
+    0 12px 32px -8px rgba(0, 0, 0, 0.18),
+    0 0 0 1px var(--color-border-strong),
+    0 0 40px -16px var(--lift-glow);
+}
+
+/* ════════════════════════════════════════════════
+   Tier 3 — GLOW (primary CTAs, active elements)
+   Soft ring + subtle brightness, no movement
+   ════════════════════════════════════════════════ */
+
+.hover-glow {
+  transition:
+    box-shadow 250ms var(--ease-out),
+    filter 250ms var(--ease-out),
+    background-color 250ms var(--ease-out);
+}
+.hover-glow:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px rgba(63, 224, 197, 0.5),
+    0 8px 32px -6px rgba(63, 224, 197, 0.45),
+    0 0 60px -20px rgba(63, 224, 197, 0.7);
+}
+
+/* ════════════════════════════════════════════════
+   Icon slide — for "View →" affordances
+   ════════════════════════════════════════════════ */
+
+.hover-icon-slide .icon-slide {
+  transition: transform 250ms var(--ease-out);
+}
+.hover-icon-slide:hover .icon-slide {
+  transform: translateX(3px);
+}
+
+/* ════════════════════════════════════════════════
+   Shine — a subtle sweep on primary buttons
+   Only for hero CTAs — NEVER on every button
+   ════════════════════════════════════════════════ */
+
+.hover-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hover-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 700ms var(--ease-out);
+  pointer-events: none;
+  z-index: 1;
+}
+.hover-shine:hover::before {
+  transform: translateX(100%);
+}
+
+/* ════════════════════════════════════════════════
+   Underline reveal — for nav links & inline links
+   ════════════════════════════════════════════════ */
+
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 300ms var(--ease-out);
+}
+.hover-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* ════════════════════════════════════════════════
+   Focus ring — matches hover glow (accessibility)
+   ════════════════════════════════════════════════ */
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* ════════════════════════════════════════════════
+   Reduced motion — disable transforms, keep color
+   ════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-micro,
+  .hover-lift,
+  .hover-glow,
+  .hover-shine,
+  .hover-underline {
+    transition: none !important;
+  }
+  .hover-micro:hover,
+  .hover-lift:hover,
+  .hover-glow:hover,
+  .hover-underline:hover::after {
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  .hover-shine::before {
+    display: none !important;
+  }
+}
