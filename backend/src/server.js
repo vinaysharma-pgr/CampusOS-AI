@@ -122,7 +122,14 @@ const io = new SocketServer(httpServer, {
 
 io.use((socket, next) => {
     try {
-      const token = socket.handshake.auth?.token;
+      // Tier 1+2: JWT lives in httpOnly cookie. Read it from the handshake cookie header.
+      const cookieHeader = socket.handshake.headers.cookie || "";
+      const cookieName = env.cookie.name;
+      const match = cookieHeader.match(new RegExp(cookieName + "=([^;]+)"));
+      const cookieToken = match ? decodeURIComponent(match[1]) : null;
+
+      // Fallback: socket.handshake.auth.token (kept for backward compatibility)
+      const token = socket.handshake.auth?.token || cookieToken;
       if (!token) return next(new Error("No token"));
       const decoded = verifyToken(token);
       socket.userId = decoded.sub;

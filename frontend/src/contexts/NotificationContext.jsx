@@ -38,19 +38,19 @@ export function NotificationProvider({ children }) {
   }, [isAuthed, refresh]);
 
   // ─── Socket.io connection ───
+  // Tier 1+2: JWT lives in an httpOnly cookie. The socket handshake carries
+  // that cookie automatically because of withCredentials: true.
   useEffect(() => {
     if (!isAuthed) {
       if (socketRef.current) { socketRef.current.disconnect(); socketRef.current = null; }
       return;
     }
-    const token = localStorage.getItem("campusos_token");
-    if (!token) return;
 
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
     const origin = apiUrl.replace(/\/api\/?$/, "");
 
     const socket = io(origin, {
-      auth: { token },
+      withCredentials: true,
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionDelay: 2000,
