@@ -161,6 +161,41 @@ const handleConfirm = async () => {
                 {event.tag}
               </span>
             )}
+            {event.isPaid && event.price > 0 ? (
+              <span
+                className="font-mono"
+                style={{
+                  padding: "2px 8px",
+                  borderRadius: "6px",
+                  fontSize: "9.5px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  border: "1px solid rgba(245,165,36,0.4)",
+                  backgroundColor: "rgba(245,165,36,0.1)",
+                  color: "#f5a524",
+                  fontWeight: 600,
+                }}
+              >
+                ₹{event.price}
+              </span>
+            ) : (
+              <span
+                className="font-mono"
+                style={{
+                  padding: "2px 8px",
+                  borderRadius: "6px",
+                  fontSize: "9.5px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  border: "1px solid rgba(74,222,128,0.4)",
+                  backgroundColor: "rgba(74,222,128,0.08)",
+                  color: "#4ade80",
+                  fontWeight: 600,
+                }}
+              >
+                Free
+              </span>
+            )}
           </div>
 
           <h3
@@ -254,7 +289,7 @@ const handleConfirm = async () => {
             backgroundColor: registered ? "rgba(74,222,128,0.08)" : "var(--color-surface-raised)",
             color: registered ? "#4ade80" : "var(--color-text-primary)",
             padding: "10px 14px",
-            marginTop: "16px",
+            marginTop: "20px",
             fontSize: "12.5px",
             cursor: registered ? "default" : "pointer",
             opacity: loading ? 0.6 : 1,
