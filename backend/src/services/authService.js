@@ -70,7 +70,7 @@ export async function loginUser({ email, password, userAgent, ipAddress }) {
 
   // Normal flow: send OTP and require verification
   if (otpStore.hasActive("login_password", email)) {
-    throw ApiError.badRequest("An OTP was already sent. Please wait 60 seconds.");
+    throw ApiError.badRequest("An OTP was already sent. Please wait a few minutes or restart the server to reset.");
   }
   const otp = otpStore.generate("login_password", email);
   fireAndForget(sendLoginOTP({ to: user.email, name: user.name, otp, ip: ipAddress }), `password-login OTP → ${email}`);
@@ -170,7 +170,7 @@ export async function startLoginOTP({ email, ip }) {
   if (!user.isActive) throw ApiError.forbidden("Account disabled");
 
   if (otpStore.hasActive("login", email)) {
-    throw ApiError.badRequest("An OTP was already sent. Please wait 60 seconds.");
+    throw ApiError.badRequest("An OTP was already sent. Please wait a few minutes or restart the server to reset.");
   }
 
   const otp = otpStore.generate("login", email);

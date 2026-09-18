@@ -59,3 +59,9 @@ export async function resetPasswordRequest({ resetToken, newPassword }) {
   const { data } = await apiClient.post("/auth/reset", { resetToken, newPassword });
   return data.data;
 }
+
+// ────────── Password + OTP (two-step login) ──────────
+export async function verifyPasswordLoginOTPRequest({ email, otp }) {
+  const { data } = await apiClient.post("/auth/login/verify-password-otp", { email, otp });
+  return data.data; // { user }
+}

@@ -5,6 +5,7 @@ import {
   signupStartRequest, signupVerifyRequest,
   loginOTPStartRequest, loginOTPVerifyRequest,
   forgotStartRequest, forgotVerifyRequest, resetPasswordRequest,
+  verifyPasswordLoginOTPRequest,
 } from "../api/auth.js";
 
 const AuthContext = createContext(null);
@@ -26,14 +27,41 @@ export function AuthProvider({ children }) {
     setUser(user);
   }, []);
 
-  // ───── Password flows ─────
-  const login = useCallback(async (credentials) => {
+  // ───── Password flow (Stage 2: 2-step with OTP) ─────
+  const login = useCallback(async (credentials, { returnRaw = false } = {}) => {
     setLoading(true);
     try {
-      const { user } = await loginRequest(credentials);
+      const raw = await loginRequest(credentials);
+
+      // Stage 2: password login may return { requiresOTP: true, email } instead of { user }
+      if (raw?.requiresOTP) {
+        return raw;
+      }
+
+      // Caller asked for the raw response (e.g. wants to inspect it)
+      if (returnRaw) {
+        if (raw?.user) persist(raw.user);
+        return raw;
+      }
+
+      // Default: just the user
+      persist(raw.user);
+      return raw.user;
+    } finally {
+      setLoading(false);
+    }
+  }, [persist]);
+
+  // ───── Second step of password login: verify OTP ─────
+  const verifyPasswordOTP = useCallback(async ({ email, otp }) => {
+    setLoading(true);
+    try {
+      const { user } = await verifyPasswordLoginOTPRequest({ email, otp });
       persist(user);
       return user;
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [persist]);
 
   const register = useCallback(async (payload) => {
@@ -42,7 +70,9 @@ export function AuthProvider({ children }) {
       const { user } = await registerRequest(payload);
       persist(user);
       return user;
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [persist]);
 
   // ───── OTP Signup ─────
@@ -58,10 +88,12 @@ export function AuthProvider({ children }) {
       const { user } = await signupVerifyRequest({ email, otp });
       persist(user);
       return user;
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [persist]);
 
-  // ───── OTP Login ─────
+  // ───── OTP Login (passwordless) ─────
   const startLoginOTP = useCallback(async ({ email }) => {
     setLoading(true);
     try { return await loginOTPStartRequest({ email }); }
@@ -74,7 +106,9 @@ export function AuthProvider({ children }) {
       const { user } = await loginOTPVerifyRequest({ email, otp });
       persist(user);
       return user;
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [persist]);
 
   // ───── Forgot Password ─────
@@ -98,7 +132,7 @@ export function AuthProvider({ children }) {
 
   // ───── Logout + refresh ─────
   const logout = useCallback(async () => {
-    try { await logoutRequest(); } catch {} // clear server cookie
+    try { await logoutRequest(); } catch {}
     try { localStorage.removeItem(USER_KEY); } catch {}
     setUser(null);
   }, []);
@@ -124,7 +158,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user, loading, isAuthed: !!user, isAdmin: user?.role === "admin",
-        login, register, logout, refreshUser,
+        login, verifyPasswordOTP, register, logout, refreshUser,
         startSignupOTP, verifySignupOTP,
         startLoginOTP, verifyLoginOTP,
         startForgot, verifyForgotOTP, resetPassword,
