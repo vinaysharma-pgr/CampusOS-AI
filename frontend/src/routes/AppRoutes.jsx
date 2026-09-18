@@ -41,6 +41,7 @@ import SendToHod from "../pages/faculty/SendToHod";
 import FacultyAssignments from "../pages/faculty/FacultyAssignments";
 import FacultyAttendance from "../pages/faculty/FacultyAttendance";
 import AdminTimetable from "../pages/admin/AdminTimetable";
+import SessionsPage from "../pages/settings/SessionsPage";
 
 export default function AppRoutes() {
   return (
@@ -104,6 +105,9 @@ export default function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/register" element={<Navigate to="/signup/otp" replace />} />
       <Route path="/dashboard" element={<DashboardRedirect />} />
+      <Route path="/settings" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+        <Route path="sessions" element={<SessionsPage />} />
+      </Route>
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

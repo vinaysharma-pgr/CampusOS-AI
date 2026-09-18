@@ -134,3 +134,26 @@ export async function cleanupExpired() {
   const result = await RefreshToken.deleteMany({ expiresAt: { $lt: new Date() } });
   return { deleted: result.deletedCount };
 }
+
+/**
+ * Revoke a session by its _id, but only if it belongs to the given user.
+ */
+export async function revokeById(id, userId, reason = "user_revoked") {
+  const record = await RefreshToken.findOneAndUpdate(
+    { _id: id, userId, isRevoked: false },
+    { isRevoked: true, revokedAt: new Date(), revokedReason: reason },
+    { new: true }
+  );
+  return !!record;
+}
+
+/**
+ * Revoke all of a user's sessions EXCEPT the one with the given token hash.
+ */
+export async function revokeAllExceptHash(userId, keepHash, reason = "user_revoked_others") {
+  const result = await RefreshToken.updateMany(
+    { userId, isRevoked: false, tokenHash: { $ne: keepHash } },
+    { isRevoked: true, revokedAt: new Date(), revokedReason: reason }
+  );
+  return { revoked: result.modifiedCount };
+}

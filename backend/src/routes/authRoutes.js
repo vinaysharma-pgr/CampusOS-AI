@@ -15,6 +15,7 @@ import {
   loginLimiter, registerLimiter, otpStartLimiter, otpVerifyLimiter, resetLimiter,
 } from "../middleware/rateLimiters.js";
 import rateLimit from "express-rate-limit";
+import { listSessions, revokeSession, revokeOtherSessions } from "../controllers/sessionController.js";
 
 const router = Router();
 
@@ -48,5 +49,10 @@ router.post("/refresh", refreshLimiter, refresh);
 // Session
 router.get("/me", requireAuth, me);
 router.post("/logout", logout);
+
+// Sessions (Tier 2 — user can see + revoke their own sessions)
+router.get("/sessions", requireAuth, listSessions);
+router.delete("/sessions/others", requireAuth, revokeOtherSessions);
+router.delete("/sessions/:id", requireAuth, revokeSession);
 
 export default router;

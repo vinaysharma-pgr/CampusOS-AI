@@ -72,6 +72,11 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
 
     // Only handle 401s, and only once per request
+    // 413 = quota exceeded, 429 = rate limit — never retry these (would loop)
+    if (status === 413 || status === 429) {
+      return Promise.reject(error);
+    }
+
     if (status !== 401 || originalRequest._retry || shouldSkipRefresh(originalRequest.url)) {
       return Promise.reject(error);
     }

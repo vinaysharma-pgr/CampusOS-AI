@@ -18,7 +18,26 @@ export default function ImagePicker({ value, onChange, label }) {
       onChange(res.url);
       showToast({ type: "success", title: "Image uploaded" });
     } catch (err) {
-      showToast({ type: "error", title: "Upload failed", description: err.response?.data?.message || err.message });
+      const status = err.response?.status;
+
+      // 429 = rate limit, 413 = quota exceeded
+      if (status === 429) {
+        showToast({
+          type: "error",
+          title: "Slow down",
+          description: err.response?.data?.message || "You've hit the upload limit. Try again in a bit.",
+          duration: 6000,
+        });
+      } else if (status === 413) {
+        showToast({
+          type: "error",
+          title: "Storage quota exceeded",
+          description: err.response?.data?.message || "You've used all your storage. Delete old uploads to free space.",
+          duration: 8000,
+        });
+      } else {
+        showToast({ type: "error", title: "Upload failed", description: err.response?.data?.message || err.message });
+      }
     } finally {
       setUploading(false);
     }

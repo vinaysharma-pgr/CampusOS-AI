@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ScanEye, AlertTriangle, ArrowUpRight, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Menu, X, ScanEye, AlertTriangle, ArrowUpRight, LayoutDashboard, LogOut, User, Shield } from "lucide-react";
 import ThemeToggle from "../ui/ThemeToggle";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 import NotificationBell from "../notifications/NotificationBell.jsx";
@@ -171,6 +171,15 @@ export default function Navbar({ onOpenSOS }) {
                   >
                     <User size={14} /> My Dashboard
                   </Link>
+
+                    <Link
+                      to="/settings/sessions"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center rounded-lg"
+                      style={{ padding: "10px 12px", gap: "10px", fontSize: "13px", color: "var(--color-text-primary)" }}
+                    >
+                      <Shield size={14} /> Sessions
+                    </Link>
 
                     <button
                       onClick={handleLogout}
