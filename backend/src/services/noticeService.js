@@ -137,7 +137,7 @@ async function notifyAudienceInApp(notice) {
       type: "notice",
       title: notice.title,
       body: notice.body.slice(0, 120) + (notice.body.length > 120 ? "…" : ""),
-      url: u => "/student/notices",
+      url: "/student/notices",
       icon: notice.priority === "urgent" ? "🚨" : "📢",
       meta: { noticeId: notice._id },
     }

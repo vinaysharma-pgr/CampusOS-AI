@@ -106,11 +106,13 @@ export async function confirmPaidRegistration({ eventId, userId, orderId, paymen
   const reg = await EventRegistration.findOne({ eventId, userId });
   if (!reg) throw ApiError.notFound("Pending registration not found");
 
+  // Guard: if already paid, don't double-count
+  const wasAlreadyPaid = reg.paymentStatus === "paid";
+
   reg.paymentStatus = "paid";
   reg.razorpayPaymentId = paymentId;
   reg.razorpaySignature = signature;
   // Look up the pending amount from the order metadata
-  // (fall back to zero if the lookup fails)
   try {
     const Event = (await import("../models/Event.js")).default;
     const evt = await Event.findById(eventId).lean();
@@ -118,8 +120,9 @@ export async function confirmPaidRegistration({ eventId, userId, orderId, paymen
   } catch {}
   await reg.save();
 
-  // Increment registered count on the event (once)
-  if (!reg.__wasCounted) {
+  // Increment registered count only the first time
+  if (!wasAlreadyPaid) {
+    const Event = (await import("../models/Event.js")).default;
     await Event.findByIdAndUpdate(eventId, { $inc: { registered: 1 } });
   }
 

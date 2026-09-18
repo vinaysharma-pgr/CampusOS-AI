@@ -95,15 +95,22 @@ function InteractiveChat() {
     setMessages((prev) => [...prev, { role: "user", text: t }]);
     setThinking(true);
 
-    // Simulate AI thinking
-    setTimeout(() => {
-      const res = getAIResponse(t);
-      setThinking(false);
+    try {
+      const res = await chatWithAI(t);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", text: res.text, actions: res.actions },
+        { role: "assistant", text: res.text, actions: res.actions || [] },
       ]);
-    }, 700 + Math.random() * 400);
+    } catch (err) {
+      console.error("Gemini failed, using fallback:", err?.response?.status, err?.message);
+      const fallback = getAIResponse(t);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: fallback.text, actions: fallback.actions },
+      ]);
+    } finally {
+      setThinking(false);
+    }
   };
 
   const reset = () => {

@@ -38,7 +38,7 @@ router.use("/event-registrations", eventRegistrationRoutes);
 router.use("/users", userRoutes);
 router.use("/payments", paymentRoutes);
 router.use("/ai", aiRoutes);
-router.use("/ai", aiVisionRoutes);
+router.use("/ai-vision", aiVisionRoutes);
 router.use("/audit-logs", auditLogRoutes);
 router.use("/admin/locks", lockRoutes);
 export default router;
