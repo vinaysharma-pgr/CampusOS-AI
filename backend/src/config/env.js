@@ -19,6 +19,9 @@ export const env = {
     refreshExpiresInDays: Number(process.env.REFRESH_TOKEN_EXPIRES_DAYS) || 30,
     refreshCookieName: process.env.REFRESH_COOKIE_NAME || "campusos_refresh",
   },
+  auth: {
+    disableLoginOtp: process.env.DISABLE_LOGIN_OTP === "true",
+  },
   cookie: {
     name: process.env.COOKIE_NAME || "campusos_token",
     secret: process.env.COOKIE_SECRET || process.env.JWT_SECRET,

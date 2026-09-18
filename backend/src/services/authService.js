@@ -3,6 +3,7 @@ import { db } from "../database/index.js";
 import { otpStore } from "../database/otpStore.js";
 import { ApiError } from "../utils/ApiError.js";
 import { signToken } from "../utils/jwt.js";
+import { env } from "../config/env.js";
 import * as loginAttempts from "./loginAttemptService.js";
 import * as refreshTokens from "./refreshTokenService.js";
 import {
@@ -57,6 +58,41 @@ export async function loginUser({ email, password, userAgent, ipAddress }) {
   }
 
   loginAttempts.recordSuccess(email);
+
+  // Password verified. Now decide: OTP required or not?
+  if (env.auth?.disableLoginOtp) {
+    // Dev bypass: skip OTP, issue tokens directly
+    const { password: _, ...safe } = user;
+    const accessToken = signToken({ sub: safe._id, role: safe.role });
+    const { rawToken: refreshToken, expiresAt } = await refreshTokens.issue(safe._id, { userAgent, ipAddress });
+    return { user: safe, accessToken, refreshToken, refreshExpiresAt: expiresAt };
+  }
+
+  // Normal flow: send OTP and require verification
+  if (otpStore.hasActive("login_password", email)) {
+    throw ApiError.badRequest("An OTP was already sent. Please wait 60 seconds.");
+  }
+  const otp = otpStore.generate("login_password", email);
+  fireAndForget(sendLoginOTP({ to: user.email, name: user.name, otp, ip: ipAddress }), `password-login OTP → ${email}`);
+  return { requiresOTP: true, email: user.email };
+}
+
+/**
+ * Second step of password login: verify the OTP that was just emailed.
+ * Issues access + refresh cookies (via controller).
+ */
+export async function verifyPasswordLoginOTP({ email, otp, userAgent, ipAddress }) {
+  const result = otpStore.verify("login_password", email, otp);
+  if (!result.ok) {
+    if (result.reason === "expired") throw ApiError.badRequest("This code has expired. Request a new one.");
+    if (result.reason === "too_many_attempts") throw ApiError.badRequest("Too many incorrect attempts.");
+    if (result.reason === "no_otp") throw ApiError.badRequest("No login in progress. Please start over.");
+    throw ApiError.badRequest(`Incorrect code. ${result.attemptsLeft} attempts remaining.`);
+  }
+
+  const user = await db.findByEmail(email);
+  if (!user) throw ApiError.notFound("User no longer exists");
+  if (!user.isActive) throw ApiError.forbidden("Account disabled");
 
   const { password: _, ...safe } = user;
   const accessToken = signToken({ sub: safe._id, role: safe.role });

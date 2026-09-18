@@ -4,7 +4,7 @@ import {
   register, login, me, logout, refresh,
   signupStart, signupVerify,
   loginOTPStart, loginOTPVerify,
-  forgotStart, forgotVerify, resetPasswordFinal,
+  forgotStart, forgotVerify, resetPasswordFinal, verifyPasswordLoginOTP,
 } from "../controllers/authController.js";
 import {
   registerRules, loginRules, emailOnlyRules, otpRules, resetPasswordRules,
@@ -29,6 +29,9 @@ const refreshLimiter = rateLimit({
 // Password-based (rate-limited)
 router.post("/register", registerLimiter, registerRules, validate, register);
 router.post("/login", loginLimiter, loginRules, validate, login);
+
+// Second step of password login (OTP verification)
+router.post("/login/verify-password-otp", otpVerifyLimiter, emailOnlyRules.concat(otpRules), validate, verifyPasswordLoginOTP);
 
 // Signup with OTP (rate-limited)
 router.post("/signup/start", otpStartLimiter, registerRules, validate, signupStart);

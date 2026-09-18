@@ -35,8 +35,27 @@ export const register = asyncHandler(async (req, res) => {
 
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const { user, accessToken, refreshToken, refreshExpiresAt } = await authService.loginUser({
+  const result = await authService.loginUser({
     email, password, ...ua(req),
+  });
+
+  // Two possible outcomes:
+  // 1. Dev bypass → tokens issued directly (result.user set)
+  // 2. Normal → OTP sent, verification required (result.requiresOTP true)
+  if (result.requiresOTP) {
+    return success(res, { requiresOTP: true, email: result.email }, "OTP sent to your email", 200);
+  }
+
+  // Dev bypass path — issue cookies immediately
+  req.user = result.user;
+  setBothCookies(res, result.accessToken, result.refreshToken, result.refreshExpiresAt);
+  return success(res, { user: result.user }, "Logged in");
+});
+
+export const verifyPasswordLoginOTP = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+  const { user, accessToken, refreshToken, refreshExpiresAt } = await authService.verifyPasswordLoginOTP({
+    email, otp, ...ua(req),
   });
   req.user = user; // for audit middleware
   setBothCookies(res, accessToken, refreshToken, refreshExpiresAt);
