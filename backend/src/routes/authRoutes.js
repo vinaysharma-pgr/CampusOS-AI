@@ -16,6 +16,7 @@ import {
 } from "../middleware/rateLimiters.js";
 import rateLimit from "express-rate-limit";
 import { listSessions, revokeSession, revokeOtherSessions } from "../controllers/sessionController.js";
+import { resendPasswordLoginOTP } from "../controllers/authController.js";
 
 const router = Router();
 
@@ -32,6 +33,7 @@ router.post("/login", loginLimiter, loginRules, validate, login);
 
 // Second step of password login (OTP verification)
 router.post("/login/verify-password-otp", otpVerifyLimiter, emailOnlyRules.concat(otpRules), validate, verifyPasswordLoginOTP);
+router.post("/login/resend-password-otp", otpStartLimiter, emailOnlyRules, validate, resendPasswordLoginOTP);
 
 // Signup with OTP (rate-limited)
 router.post("/signup/start", otpStartLimiter, registerRules, validate, signupStart);

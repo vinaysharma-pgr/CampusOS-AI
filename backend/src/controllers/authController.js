@@ -140,3 +140,9 @@ export const logout = asyncHandler(async (req, res) => {
   clearRefreshCookie(res);
   return success(res, {}, "Logged out");
 });
+
+export const resendPasswordLoginOTP = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const result = await authService.resendPasswordLoginOTP({ email });
+  return success(res, result, "New code sent");
+});

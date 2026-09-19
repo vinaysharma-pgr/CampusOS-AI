@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScanEye, Mail, ArrowUpRight, Loader2, ArrowLeft, Check } from "lucide-react";
@@ -16,11 +16,11 @@ export default function LoginOTPPage() {
   const [otp, setOtp] = useState("");
   const [cooldown, setCooldown] = useState(0);
 
-  useState(() => {
+  useEffect(() => {
     if (cooldown <= 0) return;
     const id = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
     return () => clearInterval(id);
-  });
+  }, [cooldown]);
 
   const handleSendOTP = async (e) => {
     e.preventDefault();

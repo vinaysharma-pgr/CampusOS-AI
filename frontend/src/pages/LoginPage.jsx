@@ -1,9 +1,10 @@
 ﻿// src/pages/LoginPage.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScanEye, Mail, Lock, ArrowUpRight, Loader2, ArrowLeft, Check, KeyRound } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import { resendPasswordLoginOTPRequest } from "../api/auth.js";
 import { useToast } from "../contexts/ToastContext.jsx";
 import OTPInput from "../components/auth/OTPInput.jsx";
 
@@ -19,11 +20,11 @@ export default function LoginPage() {
   const [cooldown, setCooldown] = useState(0);
 
   // Cooldown timer for resend (only used in step 2)
-  useState(() => {
+  useEffect(() => {
     if (cooldown <= 0) return;
     const id = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
     return () => clearInterval(id);
-  });
+  }, [cooldown]);
 
   const redirectTo = location.state?.from || "/";
 
@@ -105,11 +106,9 @@ export default function LoginPage() {
   const resend = async () => {
     if (cooldown > 0) return;
     try {
-      const result = await login(form, { returnRaw: true });
-      if (result?.requiresOTP) {
-        showToast({ type: "success", title: "New code sent" });
-        setCooldown(60);
-      }
+      await resendPasswordLoginOTPRequest({ email: form.email });
+      showToast({ type: "success", title: "New code sent", description: `Check ${form.email}` });
+      setCooldown(60);
     } catch (err) {
       showToast({ type: "error", title: "Failed", description: err.response?.data?.message || err.message });
     }

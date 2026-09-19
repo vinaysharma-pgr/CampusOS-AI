@@ -65,3 +65,8 @@ export async function verifyPasswordLoginOTPRequest({ email, otp }) {
   const { data } = await apiClient.post("/auth/login/verify-password-otp", { email, otp });
   return data.data; // { user }
 }
+
+export async function resendPasswordLoginOTPRequest({ email }) {
+  const { data } = await apiClient.post("/auth/login/resend-password-otp", { email });
+  return data.data;
+}

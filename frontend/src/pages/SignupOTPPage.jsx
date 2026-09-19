@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScanEye, Mail, Lock, User, Building2, ArrowUpRight, Loader2, ArrowLeft, Check } from "lucide-react";
@@ -20,11 +20,11 @@ export default function SignupOTPPage() {
   const [cooldown, setCooldown] = useState(0);
 
   // Cooldown timer for resend
-  useState(() => {
+  useEffect(() => {
     if (cooldown <= 0) return;
     const id = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
     return () => clearInterval(id);
-  });
+  }, [cooldown]);
 
   const validate = () => {
     const n = {};

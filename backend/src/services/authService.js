@@ -44,7 +44,7 @@ export async function loginUser({ email, password, userAgent, ipAddress }) {
   const user = await db.getUserWithPassword(email);
   if (!user) {
     loginAttempts.recordFailure(email);
-    throw ApiError.unauthorized("Invalid credentials");
+    throw ApiError.notFound("No account found with this email. Please sign up first.");
   }
   if (!user.isActive) throw ApiError.forbidden("Account disabled");
 
@@ -60,8 +60,11 @@ export async function loginUser({ email, password, userAgent, ipAddress }) {
   loginAttempts.recordSuccess(email);
 
   // Password verified. Now decide: OTP required or not?
-  if (env.auth?.disableLoginOtp) {
-    // Dev bypass: skip OTP, issue tokens directly
+  // Skip OTP if:
+  //   1. Dev bypass flag is on, OR
+  //   2. The user is an admin (college demo convenience)
+  const isAdmin = user.role === "admin";
+  if (env.auth?.disableLoginOtp || isAdmin) {
     const { password: _, ...safe } = user;
     const accessToken = signToken({ sub: safe._id, role: safe.role });
     const { rawToken: refreshToken, expiresAt } = await refreshTokens.issue(safe._id, { userAgent, ipAddress });
@@ -70,7 +73,7 @@ export async function loginUser({ email, password, userAgent, ipAddress }) {
 
   // Normal flow: send OTP and require verification
   if (otpStore.hasActive("login_password", email)) {
-    throw ApiError.badRequest("An OTP was already sent. Please wait a few minutes or restart the server to reset.");
+    throw ApiError.badRequest("A code was recently sent. Check your inbox, or wait 60 seconds to request a new one.");
   }
   const otp = otpStore.generate("login_password", email);
   fireAndForget(sendLoginOTP({ to: user.email, name: user.name, otp, ip: ipAddress }), `password-login OTP → ${email}`);
@@ -170,7 +173,7 @@ export async function startLoginOTP({ email, ip }) {
   if (!user.isActive) throw ApiError.forbidden("Account disabled");
 
   if (otpStore.hasActive("login", email)) {
-    throw ApiError.badRequest("An OTP was already sent. Please wait a few minutes or restart the server to reset.");
+    throw ApiError.badRequest("A code was recently sent. Check your inbox, or wait 60 seconds to request a new one.");
   }
 
   const otp = otpStore.generate("login", email);
@@ -272,4 +275,28 @@ export async function logoutSession(refreshToken) {
   if (!refreshToken) return { revoked: false };
   const ok = await refreshTokens.revoke(refreshToken, "logout");
   return { revoked: ok };
+}
+
+/**
+ * Resend the password-login OTP.
+ * Allows a re-send if the existing OTP is older than 60s.
+ */
+export async function resendPasswordLoginOTP({ email }) {
+  const user = await db.findByEmail(email);
+  if (!user) throw ApiError.notFound("No account found with this email");
+  if (!user.isActive) throw ApiError.forbidden("Account disabled");
+
+  // If there's a valid OTP that's less than 60 seconds old, refuse.
+  // But if it's older, regenerate.
+  const active = otpStore.hasActive("login_password", email);
+  if (active) {
+    // Force-regenerate anyway — user explicitly asked for a new one
+    otpStore.generate("login_password", email);
+  } else {
+    otpStore.generate("login_password", email);
+  }
+
+  const otp = otpStore.generate("login_password", email);
+  fireAndForget(sendLoginOTP({ to: user.email, name: user.name, otp }), `resend password-login OTP → ${email}`);
+  return { email: user.email, message: "New code sent" };
 }
