@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { NavLink, Link, Outlet, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ScanEye, LayoutDashboard, Building2, Calendar, Bell, Users,
-  LogOut, ArrowLeft, Command, Search, Settings, CalendarClock, Inbox, ClipboardCheck, ScrollText,
+  ScanEye, LayoutDashboard, Building2, Calendar, Bell, Users, LogOut, ArrowLeft, Command, Search, Settings, CalendarClock, Inbox, ClipboardCheck, ScrollText, GraduationCap
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import NotificationBell from "../components/notifications/NotificationBell.jsx";
@@ -19,7 +18,8 @@ const NAV = [
   { label: "Attendance", to: "/admin/attendance", icon: ClipboardCheck, shortcut: "6" },
   { label: "HOD Inbox", to: "/admin/hod-inbox", icon: Inbox, shortcut: "7" },
   { label: "Audit Logs", to: "/admin/audit-logs", icon: ScrollText, shortcut: "8" },
-  { label: "Users", to: "/admin/users", icon: Users, shortcut: "6" },
+  { label: "Exams", to: "/admin/exams", icon: GraduationCap, shortcut: "9" },
+  { label: "Users", to: "/admin/users", icon: Users, shortcut: "0" },
 ];
 
 export default function AdminLayout() {
@@ -53,7 +53,7 @@ export default function AdminLayout() {
         setPaletteOpen((o) => !o);
       }
       if (e.key === "Escape") setPaletteOpen(false);
-      if (e.altKey && ["1", "2", "3", "4", "5", "6", "7", "8"].includes(e.key)) {
+      if (e.altKey && ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(e.key)) {
         e.preventDefault();
         const target = NAV.find((n) => n.shortcut === e.key);
         if (target) navigate(target.to);

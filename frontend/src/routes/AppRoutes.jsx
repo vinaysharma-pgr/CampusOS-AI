@@ -19,12 +19,16 @@ import SignupOTPPage from "../pages/SignupOTPPage";
 import LoginOTPPage from "../pages/LoginOTPPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import StudentDashboard from "../pages/student/StudentDashboard";
+import StudentExams from "../pages/student/StudentExams";
+import StudentResults from "../pages/student/StudentResults";
 import StudentTimetable from "../pages/student/StudentTimetable";
 import StudentAttendance from "../pages/student/StudentAttendance";
 import StudentRegistrations from "../pages/student/StudentRegistrations";
 import StudentNotices from "../pages/student/StudentNotices";
 import StudentAssignments from "../pages/student/StudentAssignments";
 import FacultyDashboard from "../pages/faculty/FacultyDashboard";
+import FacultyExams from "../pages/faculty/FacultyExams";
+import FacultyExamMarks from "../pages/faculty/FacultyExamMarks";
 import FacultyTimetable from "../pages/faculty/FacultyTimetable";
 import FacultyNotices from "../pages/faculty/FacultyNotices";
 import AdminDashboard from "../pages/admin/AdminDashboard";
@@ -41,6 +45,8 @@ import SendToHod from "../pages/faculty/SendToHod";
 import FacultyAssignments from "../pages/faculty/FacultyAssignments";
 import FacultyAttendance from "../pages/faculty/FacultyAttendance";
 import AdminTimetable from "../pages/admin/AdminTimetable";
+import AdminExams from "../pages/admin/AdminExams";
+import AdminExamForm from "../pages/admin/AdminExamForm";
 import SessionsPage from "../pages/settings/SessionsPage";
 
 export default function AppRoutes() {
@@ -72,6 +78,9 @@ export default function AppRoutes() {
         <Route path="users" element={<AdminUsers />} />
         <Route path="hod-inbox" element={<AdminHodInbox />} />
         <Route path="timetable" element={<AdminTimetable />} />
+        <Route path="exams" element={<AdminExams />} />
+        <Route path="exams/new" element={<AdminExamForm />} />
+        <Route path="exams/:id/edit" element={<AdminExamForm />} />
         <Route path="attendance" element={<AdminAttendance />} />
         <Route path="audit-logs" element={<AdminAuditLogs />} />
       </Route>
@@ -80,6 +89,8 @@ export default function AppRoutes() {
       <Route path="/student" element={<ProtectedRoute role="student"><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<StudentDashboard />} />
         <Route path="timetable" element={<StudentTimetable />} />
+        <Route path="exams" element={<StudentExams />} />
+        <Route path="results" element={<StudentResults />} />
         <Route path="attendance" element={<StudentAttendance />} />
         <Route path="registrations" element={<StudentRegistrations />} />
         <Route path="notices" element={<StudentNotices />} />
@@ -91,6 +102,8 @@ export default function AppRoutes() {
         <Route index element={<FacultyDashboard />} />
         <Route path="classes" element={<FacultyTimetable />} />
         <Route path="timetable" element={<FacultyTimetable />} />
+        <Route path="exams" element={<FacultyExams />} />
+        <Route path="exams/:examId/marks" element={<FacultyExamMarks />} />
         <Route path="assignments" element={<FacultyAssignments />} />
         <Route path="attendance" element={<FacultyAttendance />} />
         <Route path="send-to-hod" element={<SendToHod />} />

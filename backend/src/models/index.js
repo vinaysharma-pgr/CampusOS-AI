@@ -11,3 +11,5 @@ export { default as Notification } from "./Notification.js";
 export { default as Upload } from "./Upload.js";
 export { default as AuditLog } from "./AuditLog.js";
 export { default as RefreshToken } from "./RefreshToken.js";
+export { default as Exam } from "./Exam.js";
+export { default as ExamResult } from "./ExamResult.js";

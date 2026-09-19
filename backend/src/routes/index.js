@@ -18,6 +18,8 @@ import aiRoutes from "./aiRoutes.js";
 import aiVisionRoutes from "./aiVisionRoutes.js";
 import auditLogRoutes from "./auditLogRoutes.js";
 import lockRoutes from "./lockRoutes.js";
+import examRoutes from "./examRoutes.js";
+import examResultRoutes from "./examResultRoutes.js";
 
 const router = Router();
 router.get("/health", (req, res) => res.json({ success: true, message: "API healthy" }));
@@ -41,4 +43,6 @@ router.use("/ai", aiRoutes);
 router.use("/ai-vision", aiVisionRoutes);
 router.use("/audit-logs", auditLogRoutes);
 router.use("/admin/locks", lockRoutes);
+router.use("/exams", examRoutes);
+router.use("/exam-results", examResultRoutes);
 export default router;
