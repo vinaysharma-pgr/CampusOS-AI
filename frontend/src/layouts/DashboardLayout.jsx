@@ -1,7 +1,7 @@
 ﻿// src/layouts/DashboardLayout.jsx
 // Shared shell for student + faculty dashboards (sidebar + header + outlet)
 import { NavLink, Link, Outlet, useNavigate } from "react-router-dom";
-import { ScanEye, LayoutDashboard, Calendar, Bell, BookOpen, LogOut, ArrowLeft, Upload, ClipboardCheck, Ticket, Shield, GraduationCap, FileText } from "lucide-react";
+import { ScanEye, LayoutDashboard, Calendar, Bell, BookOpen, LogOut, ArrowLeft, Upload, ClipboardCheck, Ticket, Shield, GraduationCap, FileText, FolderOpen } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 const NAV_STUDENT = [
@@ -13,6 +13,7 @@ const NAV_STUDENT = [
   { label: "Assignments", to: "/student/assignments", icon: BookOpen },
   { label: "Exams", to: "/student/exams", icon: GraduationCap },
   { label: "Results", to: "/student/results", icon: FileText },
+  { label: "Materials", to: "/student/materials", icon: FolderOpen },
   { label: "Sessions", to: "/settings/sessions", icon: Shield },
 ];
 
@@ -24,6 +25,7 @@ const NAV_FACULTY = [
   { label: "Send to HOD", to: "/faculty/send-to-hod", icon: Upload },
   { label: "Post Notice", to: "/faculty/notices", icon: Bell },
   { label: "Exams", to: "/faculty/exams", icon: GraduationCap },
+  { label: "Materials", to: "/faculty/materials", icon: FolderOpen },
   { label: "Sessions", to: "/settings/sessions", icon: Shield },
 ];
 

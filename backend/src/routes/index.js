@@ -20,6 +20,7 @@ import auditLogRoutes from "./auditLogRoutes.js";
 import lockRoutes from "./lockRoutes.js";
 import examRoutes from "./examRoutes.js";
 import examResultRoutes from "./examResultRoutes.js";
+import studyMaterialRoutes from "./studyMaterialRoutes.js";
 
 const router = Router();
 router.get("/health", (req, res) => res.json({ success: true, message: "API healthy" }));
@@ -45,4 +46,5 @@ router.use("/audit-logs", auditLogRoutes);
 router.use("/admin/locks", lockRoutes);
 router.use("/exams", examRoutes);
 router.use("/exam-results", examResultRoutes);
+router.use("/materials", studyMaterialRoutes);
 export default router;

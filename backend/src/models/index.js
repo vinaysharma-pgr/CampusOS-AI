@@ -13,3 +13,4 @@ export { default as AuditLog } from "./AuditLog.js";
 export { default as RefreshToken } from "./RefreshToken.js";
 export { default as Exam } from "./Exam.js";
 export { default as ExamResult } from "./ExamResult.js";
+export { default as StudyMaterial } from "./StudyMaterial.js";

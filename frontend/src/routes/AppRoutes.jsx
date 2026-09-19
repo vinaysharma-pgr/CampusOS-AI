@@ -21,6 +21,7 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import StudentDashboard from "../pages/student/StudentDashboard";
 import StudentExams from "../pages/student/StudentExams";
 import StudentResults from "../pages/student/StudentResults";
+import StudentMaterials from "../pages/student/StudentMaterials";
 import StudentTimetable from "../pages/student/StudentTimetable";
 import StudentAttendance from "../pages/student/StudentAttendance";
 import StudentRegistrations from "../pages/student/StudentRegistrations";
@@ -29,6 +30,7 @@ import StudentAssignments from "../pages/student/StudentAssignments";
 import FacultyDashboard from "../pages/faculty/FacultyDashboard";
 import FacultyExams from "../pages/faculty/FacultyExams";
 import FacultyExamMarks from "../pages/faculty/FacultyExamMarks";
+import FacultyMaterials from "../pages/faculty/FacultyMaterials";
 import FacultyTimetable from "../pages/faculty/FacultyTimetable";
 import FacultyNotices from "../pages/faculty/FacultyNotices";
 import AdminDashboard from "../pages/admin/AdminDashboard";
@@ -91,6 +93,7 @@ export default function AppRoutes() {
         <Route path="timetable" element={<StudentTimetable />} />
         <Route path="exams" element={<StudentExams />} />
         <Route path="results" element={<StudentResults />} />
+        <Route path="materials" element={<StudentMaterials />} />
         <Route path="attendance" element={<StudentAttendance />} />
         <Route path="registrations" element={<StudentRegistrations />} />
         <Route path="notices" element={<StudentNotices />} />
@@ -104,6 +107,7 @@ export default function AppRoutes() {
         <Route path="timetable" element={<FacultyTimetable />} />
         <Route path="exams" element={<FacultyExams />} />
         <Route path="exams/:examId/marks" element={<FacultyExamMarks />} />
+        <Route path="materials" element={<FacultyMaterials />} />
         <Route path="assignments" element={<FacultyAssignments />} />
         <Route path="attendance" element={<FacultyAttendance />} />
         <Route path="send-to-hod" element={<SendToHod />} />

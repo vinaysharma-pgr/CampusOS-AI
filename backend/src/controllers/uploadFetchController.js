@@ -6,6 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
+const DOC_DIR = path.join(process.cwd(), "uploads", "docs");
 
 /**
  * Serve an uploaded file ONLY to:
@@ -35,7 +36,10 @@ export const fetchUpload = asyncHandler(async (req, res) => {
     throw ApiError.forbidden("You do not have access to this file");
   }
 
-  const fullPath = path.join(UPLOAD_DIR, filename);
+  // Docs live in uploads/docs/, images in uploads/
+  const isDoc = record.purpose === "study-material" || filename.startsWith("doc-");
+  const baseDir = isDoc ? DOC_DIR : UPLOAD_DIR;
+  const fullPath = path.join(baseDir, filename);
   if (!fs.existsSync(fullPath)) throw ApiError.notFound("File not found on disk");
 
   // Set security headers
