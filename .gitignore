@@ -35,3 +35,6 @@ frontend/structure.txt
 
 # Local diagnostic output
 structure-clean.txt
+
+# README backups
+README.old-*
