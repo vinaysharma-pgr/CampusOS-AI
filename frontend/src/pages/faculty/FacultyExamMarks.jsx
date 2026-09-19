@@ -85,6 +85,11 @@ export default function FacultyExamMarks() {
           <p className="text-text-secondary" style={{ marginTop: "4px", fontSize: "13px" }}>
             {exam.courseCode} · {exam.courseName} · Max {exam.maxMarks} · Pass {exam.passingMarks}
           </p>
+          {exam.showToStudents === false && (
+            <span className="font-mono inline-flex items-center" style={{ marginTop: "6px", padding: "3px 8px", gap: "5px", borderRadius: "5px", fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, backgroundColor: "rgba(245,165,36,0.12)", color: "#f5a524", border: "1px solid rgba(245,165,36,0.3)" }}>
+              Internal — students won't see these marks
+            </span>
+          )}
         </div>
         <div className="flex items-center" style={{ gap: "8px" }}>
           <button onClick={save} disabled={saving || exam.isPublished}

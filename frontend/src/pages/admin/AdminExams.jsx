@@ -151,15 +151,27 @@ export default function AdminExams() {
                         )}
                       </td>
                       <td style={{ padding: "14px 16px" }}>
-                        {e.isPublished ? (
-                          <span className="inline-flex items-center" style={{ gap: "5px", fontSize: "11.5px", fontWeight: 600, color: "#4ade80" }}>
-                            <CheckCircle2 size={12} /> Published
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center" style={{ gap: "5px", fontSize: "11.5px", fontWeight: 600, color: "#f5a524" }}>
-                            <XCircle size={12} /> Draft
-                          </span>
-                        )}
+                        <div className="flex flex-col" style={{ gap: "3px" }}>
+                          {e.isPublished ? (
+                            <span className="inline-flex items-center" style={{ gap: "5px", fontSize: "11.5px", fontWeight: 600, color: "#4ade80" }}>
+                              <CheckCircle2 size={12} /> Published
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center" style={{ gap: "5px", fontSize: "11.5px", fontWeight: 600, color: "#f5a524" }}>
+                              <XCircle size={12} /> Draft
+                            </span>
+                          )}
+                          {e.showToStudents === false && (
+                            <span className="font-mono" style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-text-tertiary)" }}>
+                              Internal only
+                            </span>
+                          )}
+                          {e.countsTowardTotal === false && (
+                            <span className="font-mono" style={{ fontSize: "9.5px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-text-tertiary)" }}>
+                              Not counted
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td style={{ padding: "14px 16px", textAlign: "right" }}>
                         <div className="flex items-center justify-end" style={{ gap: "6px" }}>

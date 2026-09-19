@@ -91,8 +91,8 @@ export default function StudentResults() {
                   <div className="flex flex-wrap" style={{ gap: "6px" }}>
                     {c.exams.map((e) => (
                       <span key={e.resultId} className="font-mono"
-                        style={{ padding: "3px 9px", borderRadius: "6px", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, backgroundColor: e.passed ? "rgba(74,222,128,0.12)" : "rgba(240,85,77,0.12)", color: e.passed ? "#4ade80" : "#f0554d" }}>
-                        {e.examType}: {e.isAbsent ? "Absent" : e.marksObtained}/{e.maxMarks}
+                        style={{ padding: "3px 9px", borderRadius: "6px", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, backgroundColor: e.countsTowardTotal === false ? "var(--color-surface-raised)" : e.passed ? "rgba(74,222,128,0.12)" : "rgba(240,85,77,0.12)", color: e.countsTowardTotal === false ? "var(--color-text-tertiary)" : e.passed ? "#4ade80" : "#f0554d" }}>
+                        {e.examType}: {e.isAbsent ? "Absent" : e.marksObtained}/{e.maxMarks}{e.countsTowardTotal === false ? " (not counted)" : ""}
                       </span>
                     ))}
                   </div>

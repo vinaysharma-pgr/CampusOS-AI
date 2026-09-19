@@ -143,7 +143,13 @@ export async function getMyResults(studentId) {
   const exams = await Exam.find({ _id: { $in: examIds } }).lean();
   const byId = new Map(exams.map((e) => [String(e._id), e]));
 
-  const enriched = results
+  // Only show marks for exams explicitly marked visible to students
+  const visibleResults = results.filter((r) => {
+    const ex = byId.get(String(r.examId));
+    return ex && ex.showToStudents !== false;
+  });
+
+  const enriched = visibleResults
     .map((r) => {
       const ex = byId.get(String(r.examId));
       if (!ex) return null;
@@ -164,6 +170,7 @@ export async function getMyResults(studentId) {
         passed,
         isAbsent: r.isAbsent,
         remarks: r.remarks,
+        countsTowardTotal: ex.countsTowardTotal !== false,
       };
     })
     .filter(Boolean);
@@ -184,9 +191,11 @@ export async function getMyResults(studentId) {
     }
     const c = byCourseMap.get(key);
     c.exams.push(r);
-    c.totalObtained += r.marksObtained;
-    c.totalMax += r.maxMarks;
-    if (r.passed) c.passed++;
+    if (r.countsTowardTotal) {
+      c.totalObtained += r.marksObtained;
+      c.totalMax += r.maxMarks;
+      if (r.passed) c.passed++;
+    }
   }
 
   const byCourse = Array.from(byCourseMap.values()).map((c) => ({
@@ -194,8 +203,9 @@ export async function getMyResults(studentId) {
     percentage: c.totalMax > 0 ? Math.round((c.totalObtained / c.totalMax) * 100) : 0,
   }));
 
-  const totalObtained = enriched.reduce((s, r) => s + r.marksObtained, 0);
-  const totalMax = enriched.reduce((s, r) => s + r.maxMarks, 0);
+  const counted = enriched.filter((r) => r.countsTowardTotal);
+  const totalObtained = counted.reduce((s, r) => s + r.marksObtained, 0);
+  const totalMax = counted.reduce((s, r) => s + r.maxMarks, 0);
 
   const summary = {
     examsTaken: enriched.length,

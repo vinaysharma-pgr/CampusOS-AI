@@ -11,10 +11,15 @@ const SECTIONS = ["", "A", "B", "C"];
 const EXAM_TYPES = [
   { id: "mid-sem", label: "Mid Semester" },
   { id: "end-sem", label: "End Semester" },
+  { id: "class-test", label: "Class Test" },
+  { id: "pre-university", label: "Pre-University" },
+  { id: "internal", label: "Internal" },
   { id: "practical", label: "Practical" },
   { id: "viva", label: "Viva" },
+  { id: "lab-viva", label: "Lab Viva" },
   { id: "quiz", label: "Quiz" },
   { id: "assignment-test", label: "Assignment Test" },
+  { id: "other", label: "Other (specify below)" },
 ];
 
 const EMPTY = {
@@ -31,6 +36,9 @@ const EMPTY = {
   section: "",
   maxMarks: 100,
   passingMarks: 40,
+  showToStudents: true,
+  countsTowardTotal: true,
+  customType: "",
 };
 
 export default function AdminExamForm() {
@@ -124,6 +132,15 @@ export default function AdminExamForm() {
               </select>
             </Field>
           </div>
+
+          {form.examType === "other" && (
+            <div style={{ marginTop: "1rem" }}>
+              <Field label="Custom type label" required hint="e.g. Surprise Quiz, Makeup Exam">
+                <input value={form.customType} onChange={(e) => update("customType", e.target.value)}
+                  placeholder="Type the exam type" style={inputStyle} />
+              </Field>
+            </div>
+          )}
         </Section>
 
         <Section title="When and where">
@@ -174,6 +191,34 @@ export default function AdminExamForm() {
             <Field label="Passing marks" required>
               <input type="number" min="0" value={form.passingMarks} onChange={(e) => update("passingMarks", Number(e.target.value))} style={inputStyle} />
             </Field>
+          </div>
+        </Section>
+
+        <Section title="Visibility">
+          <div className="flex flex-col" style={{ gap: "1rem" }}>
+            <label className="flex items-start" style={{ gap: "10px", cursor: "pointer" }}>
+              <input type="checkbox" checked={!!form.showToStudents}
+                onChange={(e) => update("showToStudents", e.target.checked)}
+                style={{ marginTop: "2px", height: "16px", width: "16px", accentColor: "var(--color-primary)", cursor: "pointer", flexShrink: 0 }} />
+              <span>
+                <span className="text-text-primary" style={{ fontSize: "13.5px", fontWeight: 600 }}>Show marks to students</span>
+                <span className="text-text-secondary" style={{ display: "block", marginTop: "3px", fontSize: "12px", lineHeight: 1.5 }}>
+                  When off, only admins and faculty can see marks for this exam. Use this for internal class tests, quizzes, and lab vivas.
+                </span>
+              </span>
+            </label>
+
+            <label className="flex items-start" style={{ gap: "10px", cursor: "pointer" }}>
+              <input type="checkbox" checked={!!form.countsTowardTotal}
+                onChange={(e) => update("countsTowardTotal", e.target.checked)}
+                style={{ marginTop: "2px", height: "16px", width: "16px", accentColor: "var(--color-primary)", cursor: "pointer", flexShrink: 0 }} />
+              <span>
+                <span className="text-text-primary" style={{ fontSize: "13.5px", fontWeight: 600 }}>Counts toward student's total percentage</span>
+                <span className="text-text-secondary" style={{ display: "block", marginTop: "3px", fontSize: "12px", lineHeight: 1.5 }}>
+                  When off, marks are shown but excluded from the overall percentage. Use this for practice quizzes or non-credit tests.
+                </span>
+              </span>
+            </label>
           </div>
         </Section>
 
