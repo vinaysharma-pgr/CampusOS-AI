@@ -32,3 +32,6 @@ frontend/apply-fixes.mjs
 frontend/fix-*.mjs
 frontend/patch-*.mjs
 frontend/structure.txt
+
+# Local diagnostic output
+structure-clean.txt
