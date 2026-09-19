@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Loader2, TrendingUp, BookOpen, ClipboardCheck } from "lucide-react";
 import { getMyAttendanceStats } from "../../api/attendance.js";
+import SafeSkipCard from "../../features/attendance/components/SafeSkipCard.jsx";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 
 function Ring({ percent, size = 56 }) {
@@ -158,6 +159,8 @@ export default function StudentAttendance() {
           </div>
         )}
       </div>
+
+      {subjects.length > 0 && <SafeSkipCard subjects={subjects} />}
     </div>
   );
 }
