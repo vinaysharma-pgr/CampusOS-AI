@@ -3,13 +3,36 @@ import { db } from "../database/index.js";
 import { ApiError } from "../utils/ApiError.js";
 import { pushService } from "./pushService.js";
 import * as notificationService from "./notificationService.js";
+import { countForNotices, readIdsForUser } from "./noticeReadService.js";
+
+async function attachReadInfo(notices, user) {
+  if (!notices.length) return notices;
+  try {
+    const ids = notices.map((n) => n._id);
+    const isAdmin = user?.role === "admin" || user?.role === "faculty";
+    const [readCounts, myReads] = await Promise.all([
+      isAdmin ? countForNotices(ids) : Promise.resolve({}),
+      readIdsForUser(user?._id, ids),
+    ]);
+    return notices.map((n) => ({
+      ...n,
+      readCount: isAdmin ? (readCounts[String(n._id)] || 0) : undefined,
+      isReadByMe: myReads.has(String(n._id)),
+    }));
+  } catch (err) {
+    // Memory store fallback — no read tracking
+    return notices;
+  }
+}
 
 export async function listNoticesForUser(user) {
-  return db.listNotices({ role: user?.role, department: user?.department || null });
+  const notices = await db.listNotices({ role: user?.role, department: user?.department || null });
+  return attachReadInfo(notices, user);
 }
 
 export async function listAllNotices() {
-  return db.listNotices({ role: "admin" });
+  const notices = await db.listNotices({ role: "admin" });
+  return attachReadInfo(notices, { role: "admin" });
 }
 
 export async function getNotice(id) {

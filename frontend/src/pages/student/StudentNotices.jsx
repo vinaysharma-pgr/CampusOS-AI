@@ -1,7 +1,7 @@
 ﻿// src/pages/student/StudentNotices.jsx
 import { useEffect, useState } from "react";
 import { Bell, Loader2 } from "lucide-react";
-import { listNotices } from "../../api/notices.js";
+import { listNotices, markNoticeRead } from "../../api/notices.js";
 import { useToast } from "../../contexts/ToastContext.jsx";
 import NoticeCard from "../../components/notices/NoticeCard.jsx";
 
@@ -19,6 +19,23 @@ export default function StudentNotices() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleOpen = async (notice) => {
+    if (notice.isReadByMe === true) return;
+    // Optimistic update
+    setNotices((prev) =>
+      prev.map((n) => (n._id === notice._id ? { ...n, isReadByMe: true } : n))
+    );
+    try {
+      await markNoticeRead(notice._id);
+    } catch (err) {
+      // Revert if it failed
+      setNotices((prev) =>
+        prev.map((n) => (n._id === notice._id ? { ...n, isReadByMe: false } : n))
+      );
+      console.error("markRead failed:", err.message);
+    }
+  };
+
   const filtered = filter === "all"
     ? notices
     : filter === "urgent"
@@ -34,7 +51,15 @@ export default function StudentNotices() {
           Notices
         </h1>
         <p className="text-text-secondary" style={{ marginTop: "6px", fontSize: "13.5px" }}>
-          {loading ? "Loading…" : `${notices.length} notices for you`}
+          {loading
+            ? "Loading…"
+            : (() => {
+                const unread = notices.filter((n) => n.isReadByMe === false).length;
+                if (!notices.length) return "0 notices for you";
+                return unread > 0
+                  ? `${notices.length} notices · ${unread} new`
+                  : `${notices.length} notices · all caught up`;
+              })()}
         </p>
       </div>
 
@@ -80,7 +105,7 @@ export default function StudentNotices() {
       ) : (
         <div className="flex flex-col" style={{ gap: "10px" }}>
           {filtered.map((n, i) => (
-            <NoticeCard key={n._id} notice={n} index={i} />
+            <NoticeCard key={n._id} notice={n} index={i} onOpen={handleOpen} />
           ))}
         </div>
       )}

@@ -26,3 +26,8 @@ export async function deleteNotice(id) {
   const { data } = await apiClient.delete(`/notices/${id}`);
   return data.data;
 }
+
+export async function markNoticeRead(id) {
+  const { data } = await apiClient.post(`/notices/${id}/read`);
+  return data.data;
+}
